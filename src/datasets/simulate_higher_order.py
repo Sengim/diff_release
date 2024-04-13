@@ -85,5 +85,5 @@ class SimulateHigherOrder():
         return traces
 
     def create_pattern(self, num_points, spread):
-        self.pattern = np.random.default_rng().choice(spread*2, size=num_points, replace=False) - spreads
+        self.pattern = np.random.default_rng().choice(spread*2, size=num_points, replace=False) - spread
     

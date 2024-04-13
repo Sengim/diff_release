@@ -20,18 +20,12 @@ class DiffusionModel:
     
     def basic_mlp_version_bn(self, input_dim):
         x = input_lay = Input(shape=(input_dim,), name="input_1")
-        #x= Dense(x.shape[1], activation='relu')(x)
         x_ts = x_ts_in = Input(shape=(1, ), name="input_2")
-        skip_connects = []
-        #x_ts = Dense(self.tsteps, activation='relu')(x_ts)
-        print(x_ts.shape, x.shape)
         for i in range(2):
             x = Concatenate(axis=1)([x, x_ts])
 
             x= Dense(x.shape[1]//2, activation='tanh')(x)
             x = BatchNormalization()(x)
-            skip_connects.append(x)
-
         x= Dense(x.shape[1], activation='tanh')(x)
         x = BatchNormalization()(x)
         x= Dense(x.shape[1], activation='tanh')(x)

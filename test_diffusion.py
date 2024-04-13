@@ -1,7 +1,6 @@
 import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 from utils import *
-from scripts.attack import *
 import matplotlib.pyplot as plt
 
 
@@ -14,9 +13,6 @@ dataset = load_dataset("ascadv2", dataset_root_path, target_byte=target_byte, tr
 #dataset = load_dataset("eshard", dataset_root_path, target_byte=target_byte, traces_dim=1400, n_prof=5000)
 #dataset = load_dataset("ASCAD", dataset_root_path, target_byte=target_byte, traces_dim=700, n_prof=5000)
 dif_folder = "diffusion_ASCAD_23_01_2024_07_13_47_5155170"
-# dif_folder = "diffusion_eshard_24_10_2023_14_58_35_4847917"
-# # dif_folder = "diffusion_aes_hd_25_10_2023_15_47_34_3475741"
-dif_folder ="diffusion_ascadv2_22_11_2023_07_22_04_1057297"
 model = tf.keras.models.load_model(f"{results_root_path}/{dif_folder}/trained_model.keras")
 
 dataset.x_profiling, dataset.x_attack= scale_dataset(dataset.x_profiling, dataset.x_attack, StandardScaler())
@@ -65,9 +61,10 @@ plt.show()
 #plt.savefig(f"{results_root_path}/{dif_folder}/{dif_folder}/snr_orig.png")
 plt.close()
 
-t = 5
 for i in range(0, 16):
+    
 
+    #Remove noise from traces witt t = i
     dataset.x_profiling= model.predict([orig_x_prof, np.ones(dataset.x_profiling.shape[0])*i])
 
     old_snrs1 = snr_fast(dataset.x_profiling, dataset.share1_profiling)
@@ -76,7 +73,6 @@ for i in range(0, 16):
     plt.plot(old_snrs2, label="Share 2")
     if order == 3:
         old_snrs3 = snr_fast(dataset.x_profiling, dataset.share3_profiling)
-        # old_snrs3 = snr_fast(dataset.x_attack, dataset.share3_attack)
         plt.plot(old_snrs3, label="Share 3")
     print(f"{i}:{np.max(old_snrs1)}, {np.max(old_snrs2)}, {np.max(old_snrs3)}")
 

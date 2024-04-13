@@ -172,7 +172,7 @@ def multilabelize(metadata):
     return y_alpha, y_beta, y_sbox, y_raw, y_sbox_with_perm, y_permind
 
 class ReadASCADv2:
-
+    """File to read in ASCADv2 from the 15,000 sample extracted dataset."""
     
     def __init__(self, n_profiling, n_validation, n_attack, target_byte, leakage_model, file_path, first_sample=0, number_of_samples=700):
         self.name = "ascadv2"
