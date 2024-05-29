@@ -59,7 +59,7 @@ class TrainDiffusion:
 
     def forward_noise(self, x, t):
         a = self.t_bar[t]      # base on t
-        b = self.t_bar[t + 1]  # image for t + 1
+        b = self.t_bar[t - 1]  # image for t - 1
         #print(x.shape)
         noise = np.random.normal(size=x.shape)  # noise mask
         a = a.reshape((-1, 1))
@@ -105,9 +105,8 @@ class TrainDiffusion:
         temp= self.model.model.predict([temp2, np.ones(temp2.shape[0])*(self.tsteps-1)])
         snrt =  snr_fast(temp, self.snr_ref_label[:20000])
         maxt = np.max(snrt)
-        plt.plot(snr, alpha=0.5, label = "Diff_0")
-        plt.plot(snro,alpha=0.5,  label="OG")
-        plt.plot(snrt, alpha=0.5, label = "Attacs")
+        plt.plot(snrt, alpha=0.5, label = "Diffused")
+        plt.plot(snro,alpha=0.5,  label="Original")
         plt.ylabel("SNR")
         plt.xlabel("Sample")
         plt.legend()
