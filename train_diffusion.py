@@ -70,7 +70,7 @@ class TrainDiffusion:
     
 
     def generate_ts(self, num):
-        return np.random.randint(0, self.tsteps, size=num)
+        return np.random.randint(1, self.tsteps+1, size=num)
 
     def get_batch(self):
 
@@ -97,7 +97,7 @@ class TrainDiffusion:
     
     def evaluate(self, e):
         temp2 = np.array(self.dataset.x_profiling[:20000])
-        temp= self.model.model.predict([temp2, np.ones(temp2.shape[0])*0])
+        temp= self.model.model.predict([temp2, np.ones(temp2.shape[0])*1])
         snr =  snr_fast(temp, self.snr_ref_label[:20000])
         snro = snr_fast(temp2, self.snr_ref_label[:20000])
 
