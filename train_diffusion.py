@@ -23,7 +23,7 @@ class TrainDiffusion:
         self.epochs = args["epochs"]
         self.batch_size = args["batch_size"]
         self.tsteps = args["tsteps"]    # how many steps for a noisy image into clear
-        self.t_bar = np.linspace(0, 1.0, self.tsteps + 1)
+        self.t_bar =  self.select_noise_sched(args['noise_schedule'])
         self.snr_ref_label = self.select_label()
         self.pre_noise_snr = None
         if args["add_noise"] > 0.0 and not args["dataset"] =="sim" :
@@ -50,8 +50,9 @@ class TrainDiffusion:
 
             #Shuffling the traces and reference labels to not mess with SNR computation in eval
             #self.dataset.x_profiling, self.snr_ref_label = shuffle(self.dataset.x_profiling, self.snr_ref_label)
-            self.evaluate(i)
-            np.savez(f"{self.result_dir}/metrics.npz", snr_0=np.array(self.max_snr0), snr_t=np.array(self.max_snrt))
+            if (i+1) % 10 == 0: 
+                self.evaluate(i)
+                np.savez(f"{self.result_dir}/metrics.npz", snr_0=np.array(self.max_snr0), snr_t=np.array(self.max_snrt))
 
         self.model.model.save(f"{self.result_dir}/trained_model.keras")
         np.savez(f"{self.result_dir}/metrics.npz", snr_0=np.array(self.max_snr0), snr_t=np.array(self.max_snrt))
@@ -71,6 +72,27 @@ class TrainDiffusion:
 
     def generate_ts(self, num):
         return np.random.randint(1, self.tsteps+1, size=num)
+
+    def select_noise_sched(self, sched):
+        if sched == "quad":
+            #Shortcut to avoid sqrt
+            t_bar = np.linspace(0, 1.0, self.tsteps + 1)
+        elif sched == "lin":
+            t_bar = np.sqrt(np.linspace(0, 1.0, self.tsteps + 1))
+        elif sched == "sig":
+            #Sigmoid parameters
+            steepness = 10  # Controls the steepness of the curve
+            midpoint = 0.5  # Controls the midpoint of the transition
+
+            # Sigmoid schedule
+            t_bar = 1 / (1 + np.exp(-steepness * (np.linspace(0, 1.0, self.tsteps + 1) - midpoint)))
+            t_bar = np.sqrt(t_bar)
+            
+        elif sched == "cos":
+            t_bar = 0.5 * (1 + np.cos(np.linspace(0, np.pi, self.tsteps + 1)))
+            t_bar = np.sqrt(t_bar)[::-1]
+        print(t_bar)
+        return t_bar
 
     def get_batch(self):
 

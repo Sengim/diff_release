@@ -227,7 +227,7 @@ class ReadASCADv2:
         # print(add_round.shape)
         self.profiling_plaintexts = add_round[:self.n_profiling]
 
-        y_alpha, y_beta, y_sbox, y_raw, y_sbox_with_perm, y_permind = multilabelize(in_file['Profiling_traces/metadata'])    
+        y_alpha, y_beta, y_sbox, y_raw, y_sbox_with_perm, y_permind = multilabelize(in_file['Profiling_traces/metadata'][:self.n_profiling])    
         y_alpha_att, y_beta_att, y_sbox_att, y_raw_att, y_sbox_with_perm_att, y_permind_att = multilabelize(in_file['Attack_traces/metadata'])
 
         self.share1_profiling = y_alpha[:self.n_profiling]
@@ -317,7 +317,7 @@ class ReadASCADv2:
 
     def create_labels_key_guess(self, plaintexts, keys, masks, shuffling=False, leakage_order=3):
         nt = len(plaintexts)
-        labels_key_hypothesis = np.zeros((256, nt), dtype=np.int)
+        labels_key_hypothesis = np.zeros((256, nt), dtype=int)
 
         """ remove shuffling countermeasure """
         if shuffling:
@@ -340,12 +340,6 @@ class ReadASCADv2:
                 """ check leakage model """
                 if self.leakage_model == "HW":
                     intermediate = bin(intermediate).count("1")
-                elif self.leakage_model == "BIAS":
-                    intermediate = min(2, intermediate)
-                elif self.leakage_model == "BIAS1":
-                    
-                    intermediate = 0 if intermediate == 0 else 1
-
                 key_hypothesis_index = 0 if key_byte_hypothesis == actual_key_byte[trace_index] else idx_hypothesis
                 labels_key_hypothesis[key_hypothesis_index][trace_index] = intermediate
                 if key_byte_hypothesis != actual_key_byte[trace_index]:

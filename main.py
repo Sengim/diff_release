@@ -2,8 +2,8 @@ import argparse
 from diffusion import *
 
 ## Fill these in with desired 
-dataset_root_path = "/data1/karayalcins/datasets"
-results_root_path = "/data1/karayalcins/datasets/paper_9_gan_results"
+dataset_root_path = "/mnt/d/Datasets"
+results_root_path = "/home/sengim/docs/paper_10_diffussion_results"
 
 
 
@@ -18,17 +18,17 @@ def get_arguments():
 
 
     """ dataset_target: name of target dataset (possible values: ascad-variable, ASCAD, dpa_v42, eshard, aes_hd_mm) """
-    parser.add_argument("-dataset", "--dataset", default="ASCAD")
+    parser.add_argument("-dataset", "--dataset", default="eshard")
 
     """ dataset_target_dim: number of features (samples) in target dataset """
-    parser.add_argument("-dataset_dim", "--dataset_dim", default=700)
+    parser.add_argument("-dataset_dim", "--dataset_dim", default=1400)
 
     """ n_profiling_target: number of profiling traces from the target dataset """
-    parser.add_argument("-n_profiling", "--n_profiling", default=50000)
+    parser.add_argument("-n_profiling", "--n_profiling", default=40000)
 
 
     """ target_byte_target: key byte index in the target dataset """
-    parser.add_argument("-target_byte_target", "--target_byte_target", default=2)
+    parser.add_argument("-target_byte", "--target_byte", default=2)
 
     """ leakage_model: leakage model type (ID or HW) """
     parser.add_argument("-leakage_model", "--leakage_model", default="ID")
@@ -51,6 +51,10 @@ def get_arguments():
     """n_inf_feat: The number of leaky sample points per share for simulations"""
     parser.add_argument("-n_inf_feat", "--n_inf_feat", default=5)
 
+
+    """noise_schedule: parameter for setting the noise schedule"""
+    parser.add_argument("-noise_schedule", "--noise_schedule", default="quad")
+
     return parser.parse_args()
 
 
@@ -60,10 +64,10 @@ if __name__ == "__main__":
     arguments = {
         "dataset_root_path": arg_list.dataset_root_path,
         "results_root_path": arg_list.results_root_path,
-        "dataset": arg_list.dataset_target,
-        "dataset_dim": int(arg_list.dataset_target_dim),
-        "n_profiling": int(arg_list.n_profiling_target),
-        "target_byte": int(arg_list.target_byte_target),
+        "dataset": arg_list.dataset,
+        "dataset_dim": int(arg_list.dataset_dim),
+        "n_profiling": int(arg_list.n_profiling),
+        "target_byte": int(arg_list.target_byte),
         "leakage_model": arg_list.leakage_model,
         "epochs": int(arg_list.epochs),
         "batch_size": int(arg_list.batch_size),
@@ -71,6 +75,7 @@ if __name__ == "__main__":
         "lr": float(arg_list.lr),
         "add_noise": float(arg_list.add_noise),
         "n_inf_feat": int(arg_list.n_inf_feat),
+        "noise_schedule": arg_list.noise_schedule,
     }
 
     dif = Diffussion(args=arguments)

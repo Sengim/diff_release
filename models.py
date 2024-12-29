@@ -14,7 +14,6 @@ class DiffusionModel:
         self.tsteps = args["tsteps"]
         global batch_size 
         batch_size = args["batch_size"]
-        self.kernel_size = args["kernel_size"]
         self.model = self.basic_mlp_version_bn(args["dataset_dim"])
         self.model.compile(loss=self.loss, optimizer=self.optimizer)
     
