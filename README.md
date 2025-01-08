@@ -1,4 +1,4 @@
-# Code used to train diffusion models for paper: "Diffuse some Noise: Diffusion Models for1Measurement Noise Removal in Side-channel2Analysis"
+# Code used to train diffusion models for paper: "Diffuse some Noise: Diffusion Models for1Measurement Noise Removal in Side-channel Analysis"
 
 
 ## Installation
@@ -22,6 +22,7 @@ An example of how to use a trained diffusion model to transform traces is provid
 ```
 #Loading a model
 dif_folder ="diffusion_ascadv2_22_02_2024_07_22_04_1057297"
+orig_x_prof = dataset.x_profiling.copy()
 model = tf.keras.models.load_model(f"{results_root_path}/{dif_folder}/trained_model.keras")
 #Remove noise from traces with t = i
 dataset.x_profiling= model.predict([orig_x_prof, np.ones(dataset.x_profiling.shape[0])*i])
