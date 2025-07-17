@@ -1,4 +1,4 @@
-# Code used to train diffusion models for paper: "Diffuse some Noise: Diffusion Models for1Measurement Noise Removal in Side-channel Analysis"
+# Code used to train diffusion models for paper: "Diffuse some Noise: Diffusion Models for Measurement Noise Removal in Side-channel Analysis"
 
 
 ## Installation
